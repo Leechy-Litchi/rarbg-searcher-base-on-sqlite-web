@@ -1,0 +1,15 @@
+{% extends "base_tables.html" %}
+
+
+{% block content %}
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link{% block query_tab_class %}{% endblock %}" href="{{ url_for('table_query', table=table) }}">Query</a>
+    </li>
+    {% block inner_nav %}{% endblock %}
+  </ul>
+  <div style="margin-top: 20px;">
+    {% block inner_content %}
+    {% endblock %}
+  </div>
+{% endblock %}

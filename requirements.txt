@@ -1,0 +1,4 @@
+flask
+pygments
+gevent
+-e git+git://github.com/coleifer/peewee.git#egg=peewee
