@@ -8,7 +8,20 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script type="text/javascript">
+<script type="text/javascript">
+  // toggle function.
+  // move from table_content.html
+  $(function() {
+      var valueToggles = $('a.toggle-value');
+      valueToggles.on('click', function(e) {
+        e.preventDefault();
+        var elem = $(this),
+            truncated = elem.siblings('span.truncated'),
+            full = elem.siblings('span.full');
+        truncated.toggle();
+        full.toggle();
+      });
+    });    
     $(function() {
       var tableInfo = $('div#tableInfo');
 
@@ -40,24 +53,38 @@
 
 {% block inner_content %}
   <h3>
-    <p class="float-right">
+    <!-- <p class="float-right">
       <a class="btn btn-primary btn-xs" href="#" id="toggleTableInfo">+/- table definition</a>
-    </p>
+    </p> -->
     Query
   </h3>
   <form action="." method="post" role="form">
     <div class="form-group{% if error %} has-error has-feedback{% endif %}">
       <textarea class="form-control{% if error %} is-invalid{% endif %}" id="sql" name="sql" style="height: 120px;"></textarea>
+      <select name="cat" id="cat">
+        {% for cat in cats %}
+        <option value="{{ cat[0] }}">{{ cat[0] }}</option>
+        {% endfor %}
+      </select>
+      <select name="order" id="order">
+        <option value="size">size</option>
+        <option value="dt">datetime</option>
+      </select>
+      <select name="desc" id="desc">
+        <option value="desc">desc</option>
+        <option value="asc">asc</option>
+      </select>
       {% if error %}
         <div class="invalid-feedback">{{ error }}</div>
       {% endif %}
+
     </div>
     <button class="btn btn-primary" type="submit">Execute</button>
     <button class="btn btn-secondary" name="export_json" type="submit">Export JSON</button>
     <button class="btn btn-secondary" name="export_csv" type="submit">Export CSV</button>
     <div class="btn-group">
       <div class="dropdown">
-        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">SQL Help</button>
+        <!-- <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">SQL Help</button> -->
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {% for parts, img_url in query_images %}
             <a class="dropdown-item sql-image" href="{{ url_for('static', filename=img_url) }}">{{ ' : '.join(parts) }}</a>
@@ -96,7 +123,11 @@
                   {% if value==row[0] %}
                   <a href='magnet:{{ value|value_filter|safe }}'>magnet:{{ value|value_filter|safe }}</a>
                   {% else %}
+                  {% if value==row[4] %}
+                  {{ format_size(value) }}
+                  {% else %}
                   {% if value is none %}<code>NULL</code>{% else %}{{ value|value_filter|safe }}{% endif %}
+                  {% endif %}
                   {% endif %}
                 </td>
               {% endfor %}
