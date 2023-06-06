@@ -121,7 +121,7 @@
               {% for value in row %}
                 <td>
                   {% if value==row[0] %}
-                  <a href='magnet:{{ value|value_filter|safe }}'>magnet:{{ value|value_filter|safe }}</a>
+                  <a href='magnet:?xt=urn:btih:{{ value|value_filter|safe }}'>magnet:?xt=urn:btih:{{ value|value_filter|safe }}</a>
                   {% else %}
                   {% if value==row[4] %}
                   {{ format_size(value) }}
