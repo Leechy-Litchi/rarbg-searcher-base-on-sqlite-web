@@ -730,10 +730,14 @@ def generate_sql(form,table)->str:
     desc = form['desc']
     # maybe regex not so slow, but I haven't find out all the formation, so just use replace instead
     if sentence.startswith("tt"):
-        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE imdb="%s" AND cat="%s" ORDER BY "%s" %s' % (table,sentence,cat,order,desc)
+        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE imdb="%s"' % (table,sentence)
     else:
         sentence = "%"+sentence+"%"
-        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE title like "%s" AND cat="%s" ORDER BY "%s" %s' % (table,sentence,cat,order,desc)
+        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE title like "%s"' % (table,sentence)
+    if cat != "%":
+        sql = '%s AND cat="%s"' % (sql,cat)
+    if order != "%":
+        sql = '%s ORDER BY "%s" %s' % (sql,order,desc)
     print(sql)
     return sql
 
