@@ -62,8 +62,9 @@
     <div class="form-group{% if error %} has-error has-feedback{% endif %}">
       <textarea class="form-control{% if error %} is-invalid{% endif %}" id="sql" name="sql" style="height: 120px;"></textarea>
       <select name="cat" id="cat">
+        <option value="%">all</option>
         {% for cat in cats %}
-        <option value="">all</option>
+
         <option value="{{ cat[0] }}">{{ cat[0] }}</option>
         {% endfor %}
       </select>
@@ -125,7 +126,7 @@
                   {% if value==row[0] %}
                   <a href='magnet:?xt=urn:btih:{{ value|value_filter|safe }}'>magnet:?xt=urn:btih:{{ value|value_filter|safe }}</a>
                   {% else %}
-                  {% if value==row[4] %}
+                  {% if value==row[4] and value is not none %}
                   {{ format_size(value) }}
                   {% else %}
                   {% if value is none %}<code>NULL</code>{% else %}{{ value|value_filter|safe }}{% endif %}
