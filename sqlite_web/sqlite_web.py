@@ -709,20 +709,39 @@ def minimal_validate_field(field, value):
 #         row=row,
 #         table=table,
 #         table_pk=table_pk)
+def format_size(value):
+    index = 0
+    size = ['B','KB','MB','GB','TB']
+    while value>1023:
+        value = value/1024
+        index += 1
+    return "%4.2lf%s" % (value,size[index])
 
-
-
-def generateSql(sentence:str,table)->str:
+def generate_sql(form,table)->str:
+    sentence = form['sql']
     sentence = sentence.strip()
     sentence = sentence.replace(" ",".")
+    sentence = sentence.replace("'","")
+    cat = "%"
+    for c in get_cats(table):
+        if form['cat']==c[0]:
+            cat = form['cat']
+    order = form['order']
+    desc = form['desc']
+    # maybe regex not so slow, but I haven't find out all the formation, so just use replace instead
     if sentence.startswith("tt"):
-        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE imdb="%s"' % (table,sentence)
+        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE imdb="%s" AND cat="%s" ORDER BY "%s" %s' % (table,sentence,cat,order,desc)
     else:
         sentence = "%"+sentence+"%"
-        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE title like "%s"' % (table,sentence)
-        print(sql)
+        sql = 'SELECT hash,title,dt,cat,size,imdb\nFROM "%s" WHERE title like "%s" AND cat="%s" ORDER BY "%s" %s' % (table,sentence,cat,order,desc)
+    print(sql)
     return sql
 
+def get_cats(table):
+    cats = dataset.query(
+        'SELECT DISTINCT cat FROM %s' % (table)
+    )
+    return cats
 
 @app.route('/', methods=['GET', 'POST'])
 # @require_table
@@ -733,7 +752,7 @@ def table_query():
     data_description = error = row_count = sql = None
 
     if request.method == 'POST':
-        sql = generateSql(request.form['sql'],table)
+        sql = generate_sql(request.form,table)
         model_class = dataset[table].model_class
         if 'export_json' in request.form:
             query = model_class.raw(sql).dicts()
@@ -751,10 +770,10 @@ def table_query():
             data_description = cursor.description
             row_count = cursor.rowcount
     else:
-        if request.args.get('sql'):
-            sql = generateSql(request.args.get('sql'),table)
-        else:
-            # sql = 'SELECT *\nFROM "%s"' % (table)
+        # if request.args.get('sql'):
+        #     sql = generateSql(request.args.get('sql'),table)
+        # else:
+        #     # sql = 'SELECT *\nFROM "%s"' % (table)
             sql = ''
 
     table_sql = dataset.query(
@@ -769,6 +788,8 @@ def table_query():
         query_images=get_query_images(),
         row_count=row_count,
         sql=sql,
+        cats=get_cats(table),
+        format_size=format_size,
         table=table,
         table_sql=table_sql,
         sqlite3=sqlite3)
