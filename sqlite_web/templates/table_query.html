@@ -63,10 +63,12 @@
       <textarea class="form-control{% if error %} is-invalid{% endif %}" id="sql" name="sql" style="height: 120px;"></textarea>
       <select name="cat" id="cat">
         {% for cat in cats %}
+        <option value="">all</option>
         <option value="{{ cat[0] }}">{{ cat[0] }}</option>
         {% endfor %}
       </select>
       <select name="order" id="order">
+        <option value="%">no</option>
         <option value="size">size</option>
         <option value="dt">datetime</option>
       </select>
