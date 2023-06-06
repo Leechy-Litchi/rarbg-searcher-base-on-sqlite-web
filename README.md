@@ -6,6 +6,8 @@ And thanks to this guy who collect rarbg torrents for 8 years, here's the [link]
 
 **Now support filters**
 
+Next step is detecting **Leechers** and **Seeders**.
+
 Shut down website for updating in a short time, I gonna optimize the search function and wait for ISP's network upgrade.
 
 Follwings are origin description and it has the same way to use easily.
