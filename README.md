@@ -6,6 +6,8 @@ And thanks to this guy who collect rarbg torrents for 8 years, here's the [link]
 
 **For now, this project only use title and imdb number for search. It will update when I were free.**
 
+Shut down website for updating in a short time, I gonna optimize the search function and wait for ISP's network upgrade.
+
 Follwings are origin description and it has the same way to use easily.
 
 ---
